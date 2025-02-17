@@ -1,15 +1,11 @@
-let firstCard = getRandomCard();
-let secondCard = getRandomCard();
-let newCard = 0;
-let cardsArr = [firstCard, secondCard];
-console.log(cardsArr);
+let cardsArr = [];
 let sum = 0;
+let isAlive = false;
+let hasBlackjack = false;
 let messageEl = document.querySelector(".message-el");
 messageEl.textContent = "Want to play a round?";
 let cardsEl = document.querySelector(".cards-el");
 let sumEl = document.querySelector(".sum-el");
-let isAlive = true;
-let hasBlackjack = false;
 
 function getRandomCard() {
   let randomNumber = Math.floor(Math.random() * 13) + 1;
@@ -20,10 +16,21 @@ function getRandomCard() {
   } else return randomNumber;
 }
 
-function renderGame() {
-  sum = firstCard + secondCard + newCard;
+function startGame() {
+  isAlive = true;
+  hasBlackjack = false;
+  let firstCard = getRandomCard();
+  let secondCard = getRandomCard();
+  cardsArr = [firstCard, secondCard];
+  sum = firstCard + secondCard;
+  renderGame();
+}
 
-  cardsEl.textContent += ` ${cardsArr}`;
+function renderGame() {
+  cardsEl.textContent = `Cards: `;
+  for (let i = 0; i < cardsArr.length; i++) {
+    cardsEl.textContent += `${cardsArr[i]} `;
+  }
 
   sumEl.textContent = `Sum: ${sum}`;
 
@@ -31,21 +38,24 @@ function renderGame() {
     messageEl.textContent = "Do you want to draw a New Card?";
   } else if (sum === 21) {
     messageEl.textContent = "You've got Blackjack!";
+    hasBlackjack = true;
   } else {
     messageEl.textContent = "You're out of the game!";
+    isAlive = false;
   }
 }
 
 function getNewCard() {
-  if (isAlive && hasBlackjack === false) {
-    newCard = getRandomCard();
-    cardsArr.push(newCard);
+  if (isAlive === true && hasBlackjack === false) {
+    let card = getRandomCard();
+    sum += card;
+    cardsArr.push(card);
     renderGame();
   }
 }
 
 let startBtn = document.querySelector(".start-btn");
-startBtn.addEventListener("click", renderGame);
+startBtn.addEventListener("click", startGame);
 
 let newCardBtn = document.querySelector(".new-card-btn");
 newCardBtn.addEventListener("click", getNewCard);
